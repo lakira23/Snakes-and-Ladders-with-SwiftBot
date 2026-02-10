@@ -10,7 +10,7 @@ public class Code_runner_practice {
 		System.out.println(JoulesToWattHours(-0.1));
 		
 		//test2
-		System.out.println(JoulesToWattHours(1000000));
+		System.out.println(JoulesToWattHours(1000002));
 		System.out.println(JoulesToWattHours(1000001.0));
 		
 		//test3
