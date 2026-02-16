@@ -8,8 +8,9 @@ public class week_task {
 	public static void main(String args[]) throws Exception
     {
             SwiftBotAPI sb = swiftbot.SwiftBotAPI.INSTANCE;
-            BufferedImage img = sb.takeStill(ImageSize.SQUARE_48x48);
-            ImageIO.write(img, "jpg", new File("/data/home/pi/TestImage1.jpg"));
+            //BufferedImage img = sb.takeStill(ImageSize.SQUARE_48x48);
+            BufferedImage img = sb.takeGrayscaleStill(ImageSize.SQUARE_1080x1080);
+            ImageIO.write(img, "jpg", new File("/data/home/pi/TestImage_grey.jpg"));
 
             System.exit(1);
     }
