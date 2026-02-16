@@ -22,8 +22,7 @@ public class Knapsack
 	{
 		int a = Math.min(aa,bb);
 		int b = Math.max(aa,bb);
-		if (rand == null) 
-		{
+		if (rand == null) {
 			rand = new Random();
 			rand.setSeed(System.nanoTime());
 		}
