@@ -9,7 +9,8 @@ public class Vehicle
 	public Vehicle(int nw, int num_seats, int ms)
 	{
 		nwheels = nw;
-		nseats = num_seats;
+		nseats = num_seats; 
+		
 		max_speed = ms;
 	}
 	public void display()
