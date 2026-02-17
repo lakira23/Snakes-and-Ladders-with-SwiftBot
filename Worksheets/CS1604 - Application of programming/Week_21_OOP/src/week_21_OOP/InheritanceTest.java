@@ -3,7 +3,6 @@ package week_21_OOP;
 public class InheritanceTest {
 	public static void main(String args[])
 	{	
-		System.out.println("Car: ");
 		Car c = new Car();
 		c.display();
 		
