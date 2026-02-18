@@ -1,5 +1,8 @@
 //________imports______________
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 import swiftbot.Button;
 import swiftbot.SwiftBotAPI;
@@ -7,8 +10,8 @@ import swiftbot.SwiftBotAPI;
 
 //________CLASSES_______________
 class Connectors {
-	int head;
-	int tail;
+	private int head;
+	private int tail;
 
 	public Connectors() {
 
@@ -52,46 +55,58 @@ class Users {
 }
 
 public class Snakes_and_ladders {
-	static boolean game_status = true;
 	static String current_button = "";
 	static SwiftBotAPI swiftBot = SwiftBotAPI.INSTANCE;
+	static HashMap<String,Boolean> current_screen = new HashMap<>(Map.of(
+			"Menu", true,
+			"Game", false));
+	static String user_name;
+	
 
-	private static void player_setup() {	
+	private static void player_setup() {
+		Scanner text = new Scanner(System.in);
+		System.out.println("Please enter your name >>  ");
+		user_name = text.nextLine();
+		System.out.println("");
+		System.out.println("The SwiftBot has been assigned the following name:");
+		System.out.println("> SwiftBot");
 	}
-	
+
 	private static void Board_setup() {
-		
+
 	}
-	
+
 	private static void Mode_selection() {
-		
+
 	}
-	
+
 	private static void Decide_start_player() {
-		
+
 	}
-	
-	
-	
+
+
+
 	private static void menu() {
 		System.out.println("Press [Y] in the SwiftBot to start the game! ");
 
-		while (true) {
+		while (current_screen.get("Menu")) {
 			input();
 
 			if (current_button == "Y") {
 				System.out.println("");
 				System.out.println("Welcome to Snakes and Ladders!");
-				
-				player_setup();
-				Board_setup();
-				Mode_selection();
-				Decide_start_player();
-	
-				
-				break;
+				current_screen.replace("Menu", false);
+				current_screen.replace("Game", true);
+
 			}
-		}	
+		}
+		player_setup();
+		Board_setup();
+		Mode_selection();
+		Decide_start_player();
+		//return back to the main code
+
+
 	}
 
 	public static void input() {
@@ -117,7 +132,7 @@ public class Snakes_and_ladders {
 	public static void main(String[] args) {
 
 		menu();
-		while (game_status) {
+		while (current_screen.get("Game")) {
 			//game
 		}
 	}
