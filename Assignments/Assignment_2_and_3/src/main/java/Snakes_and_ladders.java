@@ -184,10 +184,9 @@ public class Snakes_and_ladders {
 
 		System.out.println("Press [A] to perform dice roll >");
 
-		while (true) {
-			if (input("A")) {
-				System.out.println("Dice ROll!");
-			}
+		if (input("A")) {
+			System.out.println("Dice ROll!");
+	
 		}
 
 	}
@@ -218,6 +217,12 @@ public class Snakes_and_ladders {
 
 	}
 
+		
+	private static void invalid_button_response(String buttons_pressed, String required_input) {
+		if (!required_input.equals(current_button)) {
+			System.out.println("[Error!] invalid option selected, please select ["+required_input+"] in the SwiftBot.");
+		}
+	}
 	public static boolean input(String required_input) {
 		while (true) {
 			try {
@@ -226,17 +231,14 @@ public class Snakes_and_ladders {
 				swiftBot.disableButton(Button.X);
 				swiftBot.disableButton(Button.Y);
 
-				swiftBot.enableButton(Button.A, () -> {System.out.println(" ");System.out.println("A been pressed"); current_button = "A";});
-				swiftBot.enableButton(Button.B, () -> {System.out.println(" ");System.out.println("B been pressed"); current_button = "B";});
-				swiftBot.enableButton(Button.X, () -> {System.out.println(" ");System.out.println("X been pressed"); current_button = "X";});
-				swiftBot.enableButton(Button.Y, () -> {System.out.println(" ");System.out.println("Y been pressed"); current_button = "Y";});
+				swiftBot.enableButton(Button.A, () -> {System.out.println(" ");System.out.println("A been pressed"); current_button = "A"; invalid_button_response("A", required_input);});
+				swiftBot.enableButton(Button.B, () -> {System.out.println(" ");System.out.println("B been pressed"); current_button = "B"; invalid_button_response("B", required_input);});
+				swiftBot.enableButton(Button.X, () -> {System.out.println(" ");System.out.println("X been pressed"); current_button = "X"; invalid_button_response("X", required_input);});
+				swiftBot.enableButton(Button.Y, () -> {System.out.println(" ");System.out.println("Y been pressed"); current_button = "Y"; invalid_button_response("Y", required_input);});
 
-				if (!required_input.equals(current_button)) {
-					System.out.println("[Error!] invalid option selected, please select ["+required_input+"] in the SwiftBot.");
-				}
-				else {
+				if (required_input.equals(current_button)) {
 					current_button = "";
-					return true;
+							return true;
 				}
 			}
 
