@@ -41,7 +41,7 @@ public class ExampleGUI extends JPanel implements ActionListener
         //Short cut key of 'S'
         startbutton.setMnemonic(KeyEvent.VK_S);
         //Create the event/action 'Start' when clicked
-        startbutton.setActionCommand("Start");
+        startbutton.setActionCommand("Start"); //an custom event
 
         //Caption for second button
         endbutton = new JButton("Stop Logging");
@@ -173,14 +173,17 @@ public class ExampleGUI extends JPanel implements ActionListener
 		Random rand = new Random();
 		rand.setSeed(System.nanoTime());
 		
-		int r = rand.nextInt(3); //0,..,2
+		int r = rand.nextInt(4); //0,..,2
 		int x = rand.nextInt(101); //0,..,100
 		int y = rand.nextInt(101); //0,..,100
 		
 		//Three colours at the moment
-    	if (r == 0) colour = Color.RED;
-    	if (r == 1) colour = Color.GREEN;
-    	if (r == 2) colour = Color.BLUE;
+    	if (r == 0) colour = Color.DARK_GRAY;
+    	if (r == 1) colour = Color.CYAN;
+    	if (r == 2) colour = Color.YELLOW;
+    	if (r == 3) colour = Color.GREEN;
+    	
+    	System.out.println(r);
         
     	//Set the colour
     	g.setColor(colour);
