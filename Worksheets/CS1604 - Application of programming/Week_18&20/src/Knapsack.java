@@ -3,6 +3,13 @@
 //This program is a "proof of concept" and not the full working model
 //The solution of the Knapsack problem on the first 1000 prime numbers
 //using a standard Hill Climbing procedure 
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.StreamTokenizer;
+import java.util.ArrayList;
+import java.util.Random;
+
 public class Knapsack 
 {
 	//Solution (binary inclusion list), 'solution(i)' = 1 means item 'i' is in the Knapsack
@@ -36,7 +43,7 @@ public class Knapsack
 		if (rand == null) 
 		{
 			rand = new Random();
-			rand.setSeed(System.nanoTime())
+			rand.setSeed(System.nanoTime());
 		}
 		return((b-a)*rand.nextDouble()+a);
 	}
@@ -47,7 +54,7 @@ public class Knapsack
 	static public ArrayList<Double> ReadNumberFile(String filename) throws Exception
 	{
 		ArrayList<Double> res = new ArrayList<Double>();
-		Reader r;
+		BufferedReader r;
 		try
 		{
 			r = new BufferedReader(new FileReader(filename));
@@ -80,7 +87,7 @@ public class Knapsack
 		double sum = 0.0;
 		for(int i=0;i<n;++i)
 		{
-			sun += weights.get(i)*solution.get(i);
+			sum += weights.get(i)*solution.get(i);
 		}
 		if (sum > limit)
 		{
@@ -91,7 +98,7 @@ public class Knapsack
 	//Read in the 1000 prime numbers
 	public static void ReadPrimes() throws Exception
 	{
-		String filename = "1000 Primes.txt";
+		String filename = "C:\\Users\\lakir\\OneDrive - Brunel University London\\Worksheets\\Lab_work\\Eclipse_projects\\Worksheets\\CS1604 - Application of programming\\Week_18&20\\src\\1000 Primes.txt";
 		weights = ReadNumberFile(filename);
 		//The number of possible weights
 		n = weights.size();
@@ -102,7 +109,7 @@ public class Knapsack
 	//This is a selection of random weights to be placed in the Knapsack
 	public static void CreateRandomStart()
 	{
-		solution.clear()
+		solution.clear();
 		for(int i=0;i<n;++i)
 		{
 			//A '1' means the item is in the Knapsack
@@ -112,6 +119,7 @@ public class Knapsack
 	//We test the program from here
 	//We want to run 10 repeats of 10,000 iterations and take the average
 	//The best fitness is 1000 (= 'limit') 
+
 	public static void main(String args[]) throws Exception
 	{
 		double sumfit = 0.0;
@@ -121,7 +129,7 @@ public class Knapsack
 		//Read in the prime numbers
 		ReadPrimes();
 		//Run the HC 'rep' times and compute the average fitness
-		for(i=0;i<rep;++i)
+		for(int i=0 ; i<rep ; ++i)
 		{
 			double fit = RunHC("RMHC",rep,10000);
 			System.out.println("Run " + i + " = "+fit);
@@ -136,7 +144,7 @@ public class Knapsack
 		CreateRandomStart();
 		//Compute the fitness of this solution
 		double fitness = ComputeFitness();
-		for(int i=0;i<iter++i)
+		for(int i=0;i<iter; i++)
 		{
 			//Uncomment this line to see how the HC is working each iteration
 			//System.out.println(id + " " + rep + " " + i + " " + fitness);
@@ -145,49 +153,50 @@ public class Knapsack
 			//Compute the fitness of the changed solution
 			double newfitness = ComputeFitness();
 			//If we have not improved - undo the change
-			if (newfitness > fitness)
-			{
+			if (newfitness > fitness){
 				UndoChange();
-				{
-					else
-					{
-						//Otherwise we keep the new solution
-						fitness = newfitness;
-					}
-				}
-				//Uncomment the following lines to display the best solution
-				/*System.out.println(solution);
+			}
+			else
+			{
+				//Otherwise we keep the new solution
+				fitness = newfitness;
+			}
+		}
+		//Uncomment the following lines to display the best solution
+		/*System.out.println(solution);
 for(int i=0;i<n;++i)
 {
 if (solution.get(i) == (byte)1) System.out.print(weights.get(i)+ " ");
 }*/
-				//System.out.println();
-				return(fitness);
-			}
-			//Undo the change that was made
-			//'index' should be the position of the last change that was made
-			private static void UndoChange() 
-			{
-				//Get the new value
-				byte temp = solution.get(index);
-				//'Flip' the bit and set - this should now be the old value 
-				temp = (byte) ((temp + (byte)1) %% (byte)2);
-				solution.set(index,temp);
-			}
-			//Make a small change to the current solution as per HC algorithm
-			private static void SmallChange() 
-			{
-				//Choose a random weight to either put in or take out of the Knapsack
-				index = UI(0,n-1);
-				//Record the old value
-				byte oldvalue = solution.get(index);
-				//'Flip' the bit
-				if (oldvalue == 0)
-				{
-					solution.set(index,(byte)1);
-				}
-				else
-				{
-					solution.set(index,(byte)0);
-				}
-			}
+		//System.out.println();
+		return(fitness);
+	}
+	//Undo the change that was made
+	//'index' should be the position of the last change that was made
+	private static void UndoChange() 
+	{
+		//Get the new value
+		byte temp = solution.get(index);
+		//'Flip' the bit and set - this should now be the old value 
+		temp = (byte) ((temp + (byte)1) % (byte)2);
+		solution.set(index,temp);
+	}
+	//Make a small change to the current solution as per HC algorithm
+	private static void SmallChange() 
+	{
+		//Choose a random weight to either put in or take out of the Knapsack
+		index = UI(0,n-1);
+		//Record the old value
+		byte oldvalue = solution.get(index);
+		//'Flip' the bit
+		if (oldvalue == 0)
+		{
+			solution.set(index,(byte)1);
+		}
+		else
+		{
+			solution.set(index,(byte)0);
+		}
+	}
+}
+
