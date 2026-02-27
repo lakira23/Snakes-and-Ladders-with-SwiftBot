@@ -151,9 +151,11 @@ public class Snakes_and_ladders {
 	static ArrayList<Users> users_obj = new ArrayList<Users>();
 	static SwiftBot_class swiftbot_obj;
 
+	static String current_mode;
 	static String pressed_button;
 
 	static int num_players = 2;
+	static Players starting_player;
 
 	static String DICE_ASCII_ART = "  "
 			+ "____\r\n"
@@ -167,6 +169,7 @@ public class Snakes_and_ladders {
 	static HashMap<String,Boolean> current_screen = new HashMap<>(Map.of(
 			"Menu", true,
 			"Game", false));
+	
 	static int [][] board = {	
 			{21,22,23,24,25},
 			{20,19,18,17,16},
@@ -205,24 +208,33 @@ public class Snakes_and_ladders {
 		connectors_obj = new ArrayList<Connectors>();
 
 		//makes the snakes
-		System.out.println("Snakes: ");
-		for (int i = 0; i < num_of_snakes; i++) {
-			Snakes a_snake = new Snakes(connectors_obj);
-			snakes_obj.add(a_snake);
-			connectors_obj.add(a_snake);
-			System.out.println("> Snake "+(i + 1)+" - Head Square " + a_snake.get_head() + "--> Tail Square " + a_snake.get_tail());
+		try { 
+			System.out.println("Snakes: ");
+			for (int i = 0; i < num_of_snakes; i++) {
+				Snakes a_snake = new Snakes(connectors_obj);
+				snakes_obj.add(a_snake);
+				connectors_obj.add(a_snake);
+				System.out.println("> Snake "+(i + 1)+" - Head Square " + a_snake.get_head() + "--> Tail Square " + a_snake.get_tail());
+			}
+			System.out.println("");
+			Thread.sleep(1000);
+
+			//makes the ladders
+			System.out.println("Ladders: ");
+
+			for (int i = 0; i < num_of_ladders; i++) {
+				Ladders a_ladder = new Ladders(connectors_obj);
+				ladders_obj.add(a_ladder);
+				connectors_obj.add(a_ladder);
+				System.out.println("> Ladder "+ (i + 1)+ " - Head Square " + a_ladder.get_head() + "--> Tail Square " + a_ladder.get_tail());
+			}	
+			System.out.println("");
+			Thread.sleep(1000);
 		}
-		System.out.println("");
 
-		//makes the ladders
-		System.out.println("Ladders: ");
-
-		for (int i = 0; i < num_of_ladders; i++) {
-			Ladders a_ladder = new Ladders(connectors_obj);
-			ladders_obj.add(a_ladder);
-			connectors_obj.add(a_ladder);
-			System.out.println("> Ladder "+ (i + 1)+ " - Head Square " + a_ladder.get_head() + "--> Tail Square " + a_ladder.get_tail());
-		}	
+		catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
 
@@ -236,47 +248,77 @@ public class Snakes_and_ladders {
 
 		String choice = input_handler(List.of("A","B"));
 		if (choice.equals("A")) {
-			System.out.println("Normal mode selected.");
+			current_mode = "A";
+			System.out.println("Mode A selected");
 		}
 		else if (choice.equals("B")) {
-			System.out.println("Override mode selected.");
+			current_mode = "B";
+			System.out.println("Mode B selcted");
 		}
 
 
 
 	}
 
-	private static void Decide_start_player() {
-		ArrayList<Integer> roll_results = new ArrayList<Integer>();
+	private static void Decide_start_player() throws InterruptedException {
+		ArrayList<Integer> user_roll_results = new ArrayList<Integer>();
 
 		System.out.println("");
 		System.out.println("Deciding starting player :-");
 
+		System.out.println("User's turn: ");
 		for (int i = 0; i < num_players - 1; i++) {
 			System.out.println(users_obj.get(i).get_name()+" press [A] in the Swiftbot to perform dice roll >");
 
-			String choice = input_handler(List.of("A"));
+			String choice = input_handler(List.of("Y"));
 			if (choice.equals("Y")) {
 				System.out.println(DICE_ASCII_ART);
 				System.out.println("DICE ROLL...");
+				Thread.sleep(250);
 
 				int each_diceroll = users_obj.get(i).get_dice_num();
 				System.out.println(users_obj.get(i).get_name()+" rolled a "+ each_diceroll);
-				roll_results.add(each_diceroll);
+				user_roll_results.add(each_diceroll);
 				System.out.println(" ");
 			}
 		}
 
 		//swiftbot roll
 
+		Thread.sleep(1000);
+		System.out.println("SwiftBot's turn: ");
 		System.out.println(DICE_ASCII_ART);
+		System.out.println("DICE ROLL...");
 
+		int swiftbot_dice_roll_num = 0; //the dice cannot be 0, so 0 is a temp value
+		while (!user_roll_results.contains(swiftbot_dice_roll_num)) { //so that they dont both roll the same number
+			swiftbot_dice_roll_num= swiftbot_obj.get_dice_num();
+		}
+		System.out.println(swiftbot_obj.get_name() + " rolled a " + swiftbot_dice_roll_num);
+
+		//comparing all the users
+
+		int highest_user_roll = 0;
+		int highest_user_array_index = 0; //help to continue from that user if we had multiple users
+		for (int i = 0; i < user_roll_results.size(); i++) {
+			if (highest_user_roll <= user_roll_results.get(i)) {
+				highest_user_roll = user_roll_results.get(i);
+				highest_user_array_index = i;
+			}
+		}
+
+		if (highest_user_roll > swiftbot_dice_roll_num) {
+			starting_player = users_obj.get(highest_user_array_index);
+		}
+		else {
+			starting_player = swiftbot_obj;
+		}
 
 	}
 
 
 
-	private static void menu() {
+	private static void menu() throws InterruptedException {
 		System.out.println("Press [Y] in the SwiftBot to start the game! ");
 
 		while (current_screen.get("Menu")) {
@@ -313,7 +355,7 @@ public class Snakes_and_ladders {
 			}
 
 			else if (all_inputs.contains(pressed_button)) { //checks if its one of the possible inputs
-				System.out.println("[Error!] invalid option selected, please select "+possible_inputs+ "in the SwiftBot.");
+				System.out.println("[Error!] invalid option selected, please select "+possible_inputs+" in the SwiftBot.");
 			}
 		}
 	}
@@ -346,7 +388,7 @@ public class Snakes_and_ladders {
 		}
 	}
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws InterruptedException {
 
 		menu();
 		while (current_screen.get("Game")) {
