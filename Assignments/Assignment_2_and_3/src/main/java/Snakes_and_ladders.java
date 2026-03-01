@@ -166,9 +166,6 @@ public class Snakes_and_ladders {
 			+ "          \\'__'\\/\r\n";
 
 	static SwiftBotAPI swiftBot = SwiftBotAPI.INSTANCE;
-	static HashMap<String,Boolean> current_screen = new HashMap<>(Map.of(
-			"Menu", true,
-			"Game", false));
 	
 	static int [][] board = {	
 			{21,22,23,24,25},
@@ -313,6 +310,8 @@ public class Snakes_and_ladders {
 		else {
 			starting_player = swiftbot_obj;
 		}
+		
+		System.out.println(starting_player.get_name() + " is the starting player!");
 
 	}
 
@@ -321,24 +320,20 @@ public class Snakes_and_ladders {
 	private static void menu() throws InterruptedException {
 		System.out.println("Press [Y] in the SwiftBot to start the game! ");
 
-		while (current_screen.get("Menu")) {
-
-			String choice = input_handler(List.of("Y"));
-			if (choice.equals("Y")) {
-				System.out.println("");
-				System.out.println("Welcome to Snakes and Ladders!");
-				current_screen.replace("Menu", false);
-				current_screen.replace("Game", true);
-			}
-			else {
-				System.out.println("Error! invalid option selected");
-			}
+		String choice = input_handler(List.of("Y"));
+		if (choice.equals("Y")) {
+			System.out.println("");
+			System.out.println("Welcome to Snakes and Ladders!");
 		}
+		else {
+			System.out.println("Error! invalid option selected");
+		}
+		
 		player_setup();
 		Board_setup();
 		Mode_selection();
 		Decide_start_player();
-		//return back to the main code
+		
 
 
 	}
@@ -391,9 +386,7 @@ public class Snakes_and_ladders {
 	public static void main(String[] args) throws InterruptedException {
 
 		menu();
-		while (current_screen.get("Game")) {
-			//game
-		}
+		//
 	}
 }
 
