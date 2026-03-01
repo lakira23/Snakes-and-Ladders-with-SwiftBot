@@ -15,16 +15,16 @@ import swiftbot.SwiftBotAPI;
 class Connectors {
 	protected int head;
 	protected int tail;
-	
+
 	static Random random = new Random();
-	
+
 	protected int[] head_boundaries; //min, max
 	protected int[] tail_boundaries; //min, max
-	
+
 	public Connectors(ArrayList<Connectors> list_connectors, int[] head_bounds, int[] tail_bounds) {
 		this.head_boundaries = head_bounds;
 		this.tail_boundaries = tail_bounds;
-		
+
 		assign_pos(list_connectors);
 
 	}
@@ -81,7 +81,7 @@ class Connectors {
 }
 
 class Snakes extends Connectors {
-	
+
 	public Snakes(ArrayList<Connectors> list_connectors) {
 		super(list_connectors, new int[] {6,24},new int[] {2,20} );
 	}
@@ -168,7 +168,7 @@ public class Snakes_and_ladders {
 			+ "          \\'__'\\/\r\n";
 
 	static SwiftBotAPI swiftBot = SwiftBotAPI.INSTANCE;
-	
+
 	static int [][] board = {	
 			{21,22,23,24,25},
 			{20,19,18,17,16},
@@ -176,7 +176,7 @@ public class Snakes_and_ladders {
 			{10,9,8,7,6},
 			{1,2,3,4,5}}; 
 
-	private static void player_setup() {
+	private static void player_setup() throws InterruptedException {
 		Scanner text = new Scanner(System.in);
 
 		//makes the users
@@ -191,6 +191,7 @@ public class Snakes_and_ladders {
 		}
 		System.out.println("The SwiftBot has been assigned the following name:");
 
+		Thread.sleep(1000);
 		//makes the swiftbot
 		swiftbot_obj = new SwiftBot_class("The SwiftBot");
 		players_obj.add(swiftbot_obj);
@@ -265,15 +266,15 @@ public class Snakes_and_ladders {
 		System.out.println("");
 		System.out.println("Deciding starting player! :-");
 		Thread.sleep(1500);
-		
+
 		System.out.println(" ");
-		
+
 		System.out.println("User's turn: ");
 		for (int i = 0; i < num_players - 1; i++) {
 			System.out.println(users_obj.get(i).get_name()+" press [A] in the Swiftbot to perform dice roll >");
 
-			String choice = input_handler(List.of("Y"));
-			if (choice.equals("Y")) {
+			String choice = input_handler(List.of("A"));
+			if (choice.equals("A")) {
 				System.out.println(DICE_ASCII_ART);
 				System.out.println("DICE ROLL...");
 				Thread.sleep(500);
@@ -292,10 +293,17 @@ public class Snakes_and_ladders {
 		System.out.println(DICE_ASCII_ART);
 		System.out.println("DICE ROLL...");
 
-		int swiftbot_dice_roll_num = 0; //the dice cannot be 0, so 0 is a temp value
-		while (!user_roll_results.contains(swiftbot_dice_roll_num)) { //so that they dont both roll the same number
-			swiftbot_dice_roll_num= swiftbot_obj.get_dice_num();
+		int swiftbot_dice_roll_num;
+		while (true) {
+			swiftbot_dice_roll_num = swiftbot_obj.get_dice_num();
+
+			System.out.println("test");
+
+			if (!user_roll_results.contains(swiftbot_dice_roll_num)) {
+				break;
+			}
 		}
+		
 		System.out.println(swiftbot_obj.get_name() + " rolled a " + swiftbot_dice_roll_num);
 
 		//comparing all the users
@@ -315,7 +323,7 @@ public class Snakes_and_ladders {
 		else {
 			starting_player = swiftbot_obj;
 		}
-		
+
 		System.out.println(starting_player.get_name() + " is the starting player!");
 
 	}
@@ -333,12 +341,12 @@ public class Snakes_and_ladders {
 		else {
 			System.out.println("Error! invalid option selected");
 		}
-		
+
 		player_setup();
 		Board_setup();
 		Mode_selection();
 		Decide_start_player();
-		
+
 
 
 	}
@@ -392,6 +400,7 @@ public class Snakes_and_ladders {
 
 		menu();
 		System.out.println("test menu finished");
+		System.exit(0);
 		//
 	}
 }
