@@ -18,6 +18,22 @@ import swiftbot.SwiftBotAPI;
 class Connectors {
 	protected int head;
 	protected int tail;
+	
+	static String LADDER_ASCII_ART = ""
+			+ "o-o\r\n"
+			+ "| |\r\n"
+			+ "+-+\r\n"
+			+ "| |\r\n"
+			+ "+-+\r\n"
+			+ "| |\r\n"
+			+ "o-o\r\n"
+			+ "";
+	
+	static String SNAKE_ASCII_ART = ""
+			+ ",=e\r\n"
+			+ " `-.  \r\n"
+			+ "_,-'\r\n"
+			+ "";
 
 	static Random random = new Random();
 
@@ -84,8 +100,17 @@ class Connectors {
 
 	public void player_connector_interaction(Players player,String connector_type) {
 		if (player.get_pos() == this.head) {
+			if (connector_type.equals("snake")) {
+				System.out.println(SNAKE_ASCII_ART);
+			}
+			
+			else if (connector_type.equals("ladder")) {
+				System.out.println(LADDER_ASCII_ART);
+			}
+			
 			System.out.println(player.get_name() + " has facen a "+connector_type+" in position "+ this.head );
-			System.out.println(player.get_name() + " will move to " + this.tail);
+			System.out.println("Fall from square " + player.get_pos() + " to " + this.tail);
+			System.out.println("***************************************");
 			player.set_pos(this.tail);
 		}
 	}
@@ -212,7 +237,15 @@ public class Snakes_and_ladders {
 			+ "\\' / . / /____/..\\\r\n"
 			+ " \\/___/  \\'  '\\  /\r\n"
 			+ "          \\'__'\\/\r\n";
-
+	
+	static String FIREWORKS_ASCII_ART = 
+			"    .              .   .'.     \\   /\r\n"
+			+ "  \\   /      .'. .' '.'   '  -=  o  =-\r\n"
+			+ "-=  o  =-  .'   '              /   \\\r\n"
+			+ "  /   \\                          '\r\n"
+			+ "    '\r\n"
+			+ "";
+	
 	static SwiftBotAPI swiftBot = SwiftBotAPI.INSTANCE;
 
 	static int [][] board = {	
@@ -272,7 +305,7 @@ public class Snakes_and_ladders {
 		System.out.println("The SwiftBot has been assigned the following name:");
 
 		//makes the swiftbot
-		swiftbot_obj = new SwiftBot_class("The SwiftBot");
+		swiftbot_obj = new SwiftBot_class("SwiftBot");
 		players_obj.add(swiftbot_obj);
 		System.out.println("> " + swiftbot_obj.get_name());
 		Thread.sleep(1000);
@@ -352,7 +385,7 @@ public class Snakes_and_ladders {
 
 		System.out.println("User's turn: ");
 		for (int i = 0; i < num_players - 1; i++) {
-			System.out.println(users_obj.get(i).get_name()+" press [A] in the Swiftbot to perform dice roll >");
+			System.out.println(users_obj.get(i).get_name()+" press [A] in the Swiftbot to roll the dice >");
 
 			String choice = input_handler(List.of("A"));
 			if (choice.equals("A")) {
@@ -483,7 +516,7 @@ public class Snakes_and_ladders {
 		int swiftbot_pos = current_player.get_pos();
 
 		if (current_mode.equals("B")) {
-			mode_B(swiftbot_pos);
+			mode_B(swiftbot_pos,swiftbot_dice);
 		}
 		else {
 			int swiftbot_new_pos = swiftbot_pos + swiftbot_dice;
@@ -494,23 +527,28 @@ public class Snakes_and_ladders {
 			else {
 				current_player.set_pos(swiftbot_pos + swiftbot_dice);
 			}
+			
 		}
+		
+		System.out.println("");
+		System.out.println("The SwiftBot moved from:");
+		System.out.println(swiftbot_pos + " to " + current_player.get_pos());
+		System.out.println("");
 
 		snake_checker();
 		ladder_checker();
 		swiftbot_movements();
 	}
 
-	private static void mode_B(int swiftbot_pos) throws InterruptedException {
+	private static void mode_B(int swiftbot_pos,int swiftbot_dice) throws InterruptedException {
 
 		System.out.println("Would the user like to overide the dice? (y/n)");
-
+		Scanner text = new Scanner(System.in);
 		while (true) {
 			try {
-				Scanner text = new Scanner(System.in);
 				String user_input = text.nextLine();
 				if (user_input.equals("y")) {
-					System.out.println("Choose amount of steps in numbers: ");
+					System.out.println("Enter a number between 1 and 5 >>: ");
 
 					while (true) {
 						int extra_steps = text.nextInt();
@@ -526,16 +564,25 @@ public class Snakes_and_ladders {
 					return;
 				}
 				else if (user_input.equals("n")) {
+					int swiftbot_new_pos = swiftbot_pos + swiftbot_dice;
+					if (swiftbot_new_pos > 25) {
+						System.out.println("Please get a number which is less than or equal to 25!");
+						System.out.println(current_player.get_name() + " returned to position : "+ swiftbot_pos);
+					}
+					else {
+						current_player.set_pos(swiftbot_pos + swiftbot_dice);
+					}
 					return;
 				}
 
 				else {
-					error("Unusual input given, please input either y or n!");
+					error("Invalid input given, please input either y or n!");
 				}
 			}
 
 			catch (Exception e) {
 				error("input is not a Integer, please input a integer!");
+				text.nextLine();
 			}
 		}
 	}
@@ -655,7 +702,7 @@ public class Snakes_and_ladders {
 			}
 
 			else if (all_inputs.contains(pressed_button)) { //checks if its one of the possible inputs
-				error("invalid option selected, please select "+ possible_inputs +" in the SwiftBot.");
+				error("invalid option selected, please select "+ possible_inputs +" in the SwiftBot and try again!");
 			}
 		}
 	}
@@ -744,6 +791,7 @@ public class Snakes_and_ladders {
 		Players game_winner = current_player;
 		System.out.println(Colours.YELLOW + Colours.BOLD +game_winner.get_name() + " is the winner!" + Colours.RESET);
 
+		System.out.println(FIREWORKS_ASCII_ART);
 		System.out.println("file location is : ");
 		System.out.println(logfile.getAbsolutePath());
 		writer.close();
