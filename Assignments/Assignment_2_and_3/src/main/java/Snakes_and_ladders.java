@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -301,7 +302,7 @@ public class Snakes_and_ladders {
 					error("Player name cannot be blank, please enter a name");
 				}
 				else {
-					Users a_user = new Users(text.nextLine());
+					Users a_user = new Users(username);
 
 					users_obj.add(a_user);
 					players_obj.add(a_user);
@@ -334,7 +335,7 @@ public class Snakes_and_ladders {
 		System.out.println("");
 		System.out.println(Colours.BOLD + Colours.CYAN +"The board will look like the following : " + Colours.RESET);
 		for (int[] each_row : board) {
-			System.out.println(each_row);
+			System.out.println(Arrays.toString(each_row));
 		}
 		System.out.println("");
 		Thread.sleep(500);
