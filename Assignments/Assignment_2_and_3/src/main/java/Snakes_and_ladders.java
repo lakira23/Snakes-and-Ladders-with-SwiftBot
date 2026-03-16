@@ -222,11 +222,14 @@ public class Snakes_and_ladders {
 
 	static int swiftbot_physical_pos = 1;
 	static int pos_changer;
+	
 	static int WHEEL_POWER = 50; //limited power to reduce slipping
-	static int TURN_90_TIME = 510;//miliseconds in plywood
-	static double POWER_SPEED =  0.4212 * WHEEL_POWER; //motor power cofient for linear callibration.
-	static int FORWARD_TIME = 850; //miliseoncds for 25 cm of travel
-	static int WHEEL_CALLIBRATION_SYMETRY = -10;
+	
+	static int PULSE_TIME = 50; 
+	static int PULSE_COUNT_STRAIGHT = 50;
+	static int PULSE_COUNT_TURN = 14;
+	
+	static int WHEEL_OFFSET = -5;
 	static String SwiftBot_orientation = "East";
 
 	static boolean game_over = false;
@@ -615,8 +618,8 @@ public class Snakes_and_ladders {
 		}
 
 		else {
-			swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, -WHEEL_POWER, TURN_90_TIME); //clockwise
-			swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, -WHEEL_POWER, TURN_90_TIME); //clockwise
+			swiftbot_turn_left();
+			swiftbot_turn_left();
 
 			if (SwiftBot_orientation.equals("west")) {
 				SwiftBot_orientation = "east";
@@ -648,38 +651,32 @@ public class Snakes_and_ladders {
 			System.out.println("Test: end of row reached");
 
 			if ((current_row + 1) % 2 == 0) {
-				swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, -WHEEL_POWER, TURN_90_TIME); //clockwise
+				swiftbot_turn_right();
 				System.out.println("turning clockwise");
 				SwiftBot_orientation = "north";
-				Thread.sleep(500);
-				swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, WHEEL_POWER, FORWARD_TIME);
+				
+				swiftbot_move_straight();
 				System.out.println("going straight");
-				Thread.sleep(500);
-				swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, -WHEEL_POWER, TURN_90_TIME);
+				
+				swiftbot_turn_right();
 				System.out.println("turning clockwise");
 				SwiftBot_orientation = "east";
-				Thread.sleep(500);
-
+				
 				//turn 90 degress clockwise
 				//move forward
 				//turn 90 degrees
 			}
 			else {
-
-
-
-				swiftBot.move(-(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY), WHEEL_POWER, TURN_90_TIME); //anticlockwise
+				swiftbot_turn_left();
 				System.out.println("turning anticlockwise");
 				SwiftBot_orientation = "north";
-				Thread.sleep(500);
-				swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, WHEEL_POWER, FORWARD_TIME);
+				
+				swiftbot_move_straight();
 				System.out.println("going straight");
-				Thread.sleep(500);
-				swiftBot.move(-(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY), WHEEL_POWER, TURN_90_TIME);
+				
+				swiftbot_turn_left();
 				System.out.println("turning anticlockwise");
 				SwiftBot_orientation = "west";
-				Thread.sleep(500);
-
 
 				//turn 90 anticlockwise
 				//move forward
@@ -689,13 +686,40 @@ public class Snakes_and_ladders {
 		}
 		else {
 			//swiftbot move formard
-			swiftBot.move(WHEEL_POWER + WHEEL_CALLIBRATION_SYMETRY, WHEEL_POWER, FORWARD_TIME);
+			swiftbot_move_straight();
 			System.out.println("going straight");
 			swiftbot_physical_pos += pos_changer;
 		}
 
 	}
 
+	private static void swiftbot_move_straight() throws InterruptedException {
+		for (int i = 0; i < PULSE_COUNT_STRAIGHT; i++) {
+			if (i % 2 == 0) {
+            	swiftBot.move(WHEEL_POWER + WHEEL_OFFSET - 1, WHEEL_POWER, PULSE_TIME);
+            } 
+            else {
+            	swiftBot.move(WHEEL_POWER + WHEEL_OFFSET, WHEEL_POWER, PULSE_TIME);
+            }
+			
+			Thread.sleep(40);
+		}
+	}
+	
+	private static void swiftbot_turn_left() throws InterruptedException {
+		for (int i = 0; i < PULSE_COUNT_TURN; i++) {
+            swiftBot.move(-WHEEL_POWER, WHEEL_POWER, PULSE_TIME);
+            Thread.sleep(40);
+        }
+	}
+	
+	private static void swiftbot_turn_right() throws InterruptedException {
+		for (int i = 0; i < PULSE_COUNT_TURN; i++) {
+            swiftBot.move(-WHEEL_POWER, WHEEL_POWER, PULSE_TIME);
+            Thread.sleep(40);
+        }
+	}
+	
 	private static void snake_checker() {
 		for (Snakes each_snake: snakes_obj) {
 			each_snake.player_connector_interaction(current_player);
