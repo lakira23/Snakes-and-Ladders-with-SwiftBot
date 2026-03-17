@@ -93,7 +93,7 @@ class Connectors {
 	}
 
 	public int get_head() {
-		return this.head;
+		return this.head; 
 	}
 
 	public int get_tail() {
@@ -227,8 +227,8 @@ public class Snakes_and_ladders {
 	static int WHEEL_POWER = 50; //limited power to reduce slipping
 
 	static int PULSE_TIME = 50; 
-	static int pulse_count_straight = 50;
-	static int pulse_count_turn = 14;
+	static int pulse_count_straight = 25;
+	static int pulse_count_turn = 10;
 
 	static int WHEEL_OFFSET = -5;
 	static String SwiftBot_orientation = "East";
@@ -470,6 +470,14 @@ public class Snakes_and_ladders {
 		int current_player_index = players_obj.indexOf(current_player);
 
 		while (!game_over) {
+			if (current_player.get_pos() == 5) {
+				quit_handling();
+			}
+			if (current_player.get_pos() == 25) {
+				game_termination_logging();
+				break;
+			}
+
 			if (current_player instanceof SwiftBot_class) {
 				//player is the swiftbot
 				swiftbot_turn();
@@ -479,12 +487,7 @@ public class Snakes_and_ladders {
 				user_turn();
 			}
 
-			if (current_player.get_pos() == 5) {
-				quit_handling();
-			}
-			if (current_player.get_pos() == 25) {
-				game_termination_logging();
-			}
+
 
 			current_player_index = (current_player_index + 1) % players_obj.size(); //mimics a cyclical structure
 			current_player = players_obj.get(current_player_index);
@@ -879,16 +882,16 @@ public class Snakes_and_ladders {
 	private static  void calibration() throws InterruptedException {
 		while (true) {
 			try {
-				Scanner input = new Scanner(System.in);
+
 				System.out.println("");
 				System.out.println(Colours.CYAN + Colours.BOLD + "Lets start by calibrating the Swiftbot's movemets! " + Colours.RESET);
-				System.out.println("enter '0' to comfirm it.....");
 				System.out.println(" ");
 
-				calibrate_straightline(input);
-				calibrate_turns(input);
+				calibrate_straightline();
 
-				System.out.println(Colours.BOLD + "calibration is done!" + Colours.RESET);
+				calibrate_turns();
+
+				System.out.println(Colours.BOLD + Colours.YELLOW + "calibration is done!" + Colours.RESET);
 				System.out.println(" ");
 				break;
 			}
@@ -899,15 +902,22 @@ public class Snakes_and_ladders {
 		}
 	}
 
-	private static void calibrate_straightline(Scanner input) throws InterruptedException {
+	private static void calibrate_straightline() throws InterruptedException {
 		while (true) {
 			try {
-				System.out.println(Colours.BOLD +"Calibrating straight line" + Colours.RESET);
+				System.out.println(Colours.BOLD + Colours.GREEN +"Calibrating straight line" + Colours.RESET);
+
+				Scanner input = new Scanner(System.in);
+				System.out.println("press anybutton to start");
+				String temp = input.nextLine();
+
+
+
 				System.out.println("current pulse : " + pulse_count_straight);
 
 				swiftbot_move_straight();
 
-				System.out.println("enter the new pulse count for the straight line: ");
+				System.out.println("enter the new pulse count for the straight line or enter 0 to comfirm: ");
 				int user_input = input.nextInt();
 
 				if (user_input == 0) {
@@ -915,39 +925,64 @@ public class Snakes_and_ladders {
 					return;
 
 				}
+
+				else if (user_input < 0) {
+					error("entered number is invalid, please enter a number greater than 0");
+
+				}
+				
+				else if (user_input > 60) {
+					error("entered number is invalid, please enter a number less than 60");
+
+				}
 				else {
 					pulse_count_straight = user_input;
 				}
 			}
-			
-			catch (NumberFormatException e) {
+
+			catch (Exception e) {
 				error("Invalid data type used, please enter a integer!");
 			}
 		}
 	}
 
-	private static void calibrate_turns(Scanner input) throws InterruptedException {
+	private static void calibrate_turns() throws InterruptedException {
 		while (true) {
 			try {
-				System.out.println(Colours.BOLD +"Calibrating turn" + Colours.RESET);
+				System.out.println(" ");
+				System.out.println(Colours.BOLD+Colours.GREEN +"Calibrating turn" + Colours.RESET);
+
+				Scanner input = new Scanner(System.in);
+				System.out.println("press anybutton to start");
+				String temp = input.nextLine();
+
+
 				System.out.println("current pulse : " + pulse_count_turn);
 
-				swiftbot_turn_clockwise();
+				swiftbot_turn_right();
 
-				System.out.println("enter the new pulse count for the turn: ");
+				System.out.println("enter the new pulse count for the turn or enter 0 to comfirm: ");
 				int user_input = input.nextInt();
 
 				if (user_input == 0) {
 					System.out.println("The final pulse is : " + pulse_count_turn);
 					return;
+				}
+				
+				else if (user_input > 60) {
+					error("entered number is invalid, please enter a number greater than 0");
 
 				}
+				else if (user_input < 0) {
+					error("entered number is invalid, please enter a number greater than 60");
+				}
+
 				else {
 					pulse_count_turn = user_input;
 				}
 			}
-			
-			catch (NumberFormatException e) {
+
+			catch (Exception e) {
 				error("Invalid data type used, please enter a integer!");
 			}
 		}
