@@ -1,4 +1,5 @@
 //________imports______________
+import java.awt.Color;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -21,7 +22,7 @@ class Connectors {
 	protected int head;
 	protected int tail;
 
-	static String LADDER_ASCII_ART = ""
+	static String LADDER_ASCII_ART =  ""
 			+ "o-o\r\n"
 			+ "| |\r\n"
 			+ "+-+\r\n"
@@ -490,7 +491,7 @@ public class Snakes_and_ladders {
 		int current_player_index = players_obj.indexOf(current_player);
 
 		while (!game_over) {
-			System.out.println("swiftbot orientation : " + SwiftBot_orientation);
+			
 			if (current_player instanceof SwiftBot_class) {
 				//player is the swiftbot
 				swiftbot_turn();
@@ -602,7 +603,7 @@ public class Snakes_and_ladders {
 
 	private static void mode_B(int swiftbot_pos,int swiftbot_dice) throws InterruptedException {
 
-		System.out.println("Would the user like to overide the dice? (y/n)");
+		System.out.println("Would the user like to overide the dice? please type (y/n)");
 		Scanner text = new Scanner(System.in);
 		while (true) {
 			try {
@@ -654,14 +655,12 @@ public class Snakes_and_ladders {
 		}
 
 		else {
-			System.out.println("pos is less than physical pos");
 			
 			Thread.sleep(1000);
 			swiftbot_turn_left();
 			Thread.sleep(1000);
 			swiftbot_turn_left();
 			
-			System.out.println("turned 180 degrees");
 
 			if (SwiftBot_orientation.equals("west")) {
 				SwiftBot_orientation = "east";
@@ -684,7 +683,6 @@ public class Snakes_and_ladders {
 			swiftbot_turn_left();
 			Thread.sleep(1000);
 			swiftbot_turn_left();
-			System.out.println("turning 180");
 			pos_changer = 1;
 
 			if (SwiftBot_orientation.equals("west")) {
@@ -697,7 +695,6 @@ public class Snakes_and_ladders {
 	}
 
 	private static void swiftbot_turn_movement() throws InterruptedException {
-		System.out.println("swiftbot physical pos" + swiftbot_physical_pos + "but destination: " + current_player.get_pos() );
 		
 		Thread.sleep(1000);
 		
@@ -705,16 +702,14 @@ public class Snakes_and_ladders {
 
 
 		if (swiftbot_physical_pos % 5 == 0 && pos_changer == 1) { //if end of the row normal scenario
-			System.out.println("normal scenario");
+			
 			if ((current_row + 1) % 2 == 0) {
-				System.out.println("turning clockwise");
 				swiftbot_turn_clockwise();
 				//turn 90 degress clockwise
 				//move forward
 				//turn 90 degrees
 			}
 			else {
-				System.out.println("turning anticlockwise");
 				swiftbot_turn_anticlockwise();
 				//turn 90 anticlockwise
 				//move forward
@@ -724,14 +719,11 @@ public class Snakes_and_ladders {
 		}
 		
 		else if ((swiftbot_physical_pos -1) % 5 == 0 && pos_changer == -1) {
-			System.out.println("end of row and going backwords");
 			if ((current_row + 1) % 2 == 0) {
-				System.out.println("turnin clockwise");
 				swiftbot_turn_clockwise();
 			}
 			else {
 				swiftbot_turn_anticlockwise();
-				System.out.println("turning anticlockwise");
 			}
 			swiftbot_physical_pos += pos_changer;
 
@@ -739,7 +731,6 @@ public class Snakes_and_ladders {
 		else {
 			//swiftbot move formard
 			swiftbot_move_straight();
-			System.out.println("going straight");
 			swiftbot_physical_pos += pos_changer;
 		}
 
@@ -856,10 +847,11 @@ public class Snakes_and_ladders {
 	//________game end handling
 	private static void quit_handling() throws IOException, InterruptedException {
 		System.out.println("The current position of " + current_player.get_name() + " is " + current_player.get_pos());
-		System.out.println("please press [X] in the SwiftBot if you would like to quit");
+		System.out.println(Colours.ORANGE+"please press [X] in the SwiftBot if you would like to quit" + Colours.RESET);
 
 		String choice;
 		if (current_player.get_pos() == 5) {
+			System.out.println("If you would like to continue the game, pleae press either [Y], [A] or [B]");
 			choice = input_handler(List.of("X","Y","A","B"));
 		}
 		else {
@@ -994,7 +986,7 @@ public class Snakes_and_ladders {
 				System.out.println(Colours.BOLD + Colours.GREEN +"Calibrating straight line" + Colours.RESET);
 
 				Scanner input = new Scanner(System.in);
-				System.out.println("press anybutton to start");
+				System.out.println("press any key to start");
 				String temp = input.nextLine();
 
 
@@ -1039,7 +1031,7 @@ public class Snakes_and_ladders {
 				System.out.println(Colours.BOLD+Colours.GREEN +"Calibrating turn" + Colours.RESET);
 
 				Scanner input = new Scanner(System.in);
-				System.out.println("press anybutton to start");
+				System.out.println("press any key to start");
 				String temp = input.nextLine();
 
 
